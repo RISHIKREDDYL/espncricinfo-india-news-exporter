@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  news-exporter:
+    build: .
+    volumes:
+      - ./output:/app/output
+    environment:
+      - PYTHONUNBUFFERED=1

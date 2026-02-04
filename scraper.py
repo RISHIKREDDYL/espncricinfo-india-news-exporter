@@ -2,24 +2,33 @@
 # This Python script scrapes the latest headlines from the 'India' category RSS feed on ESPNcricinfo
 # and exports the data into a file format of your choice: Excel, CSV, or JSON.
 
+import os
+import sys
+
+def get_input(prompt, env_var, default=None):
+    val = os.getenv(env_var)
+    if val:
+        return val
+    try:
+        if sys.stdin.isatty():
+            return input(prompt)
+        else:
+            if default: return default
+            raise ValueError(f"No tty and no env var {env_var}")
+    except EOFError:
+        if default: return default
+        raise
+
 print("📢 Welcome to the ESPNcricinfo India News Scraper!")
-print("📌 This script fetches the latest news from the India section of ESPNcricinfo's RSS feed.")
-print("🔽 Choose how you'd like to export the news:")
-print("- Excel")
-print("- CSV")
-print("- JSON")
-print("########################################")
+export_format = get_input("📝 Your choice (Excel/CSV/JSON): ", "EXPORT_FORMAT", "csv").lower().strip()
+file_name = get_input("📄 Enter the output file name: ", "FILE_NAME", "india_news")
 
-export_format = input("📝 Your choice: ").lower().strip()
-print("########################################")
+# Ensure output directory exists if in Docker
+output_dir = "output"
+if not os.path.exists(output_dir) and os.path.exists("/app"):
+    os.makedirs(output_dir, exist_ok=True)
 
-# Validate the user input
-while export_format not in ['excel', 'csv', 'json']:
-    print("❌ Invalid choice. Please enter one of: Excel, CSV, or JSON.")
-    export_format = input("📝 Your choice: ").lower().strip()
-
-print("✅ You selected:", export_format.upper())
-file_name = input("📄 Enter the output file name (without extension): ").strip()
+file_path = os.path.join(output_dir if os.path.exists(output_dir) else ".", f"{file_name}")
 
 # Import required libraries
 from bs4 import BeautifulSoup
@@ -64,13 +73,13 @@ print(df.head())
 
 # Export to the desired file format
 if export_format == 'excel':
-    file_path = f"{file_name}.xlsx"
-    df.to_excel(file_path, index=False)
+    full_path = f"{file_path}.xlsx"
+    df.to_excel(full_path, index=False)
 elif export_format == 'csv':
-    file_path = f"{file_name}.csv"
-    df.to_csv(file_path, index=False)
+    full_path = f"{file_path}.csv"
+    df.to_csv(full_path, index=False)
 elif export_format == 'json':
-    file_path = f"{file_name}.json"
-    df.to_json(file_path, orient='records')
+    full_path = f"{file_path}.json"
+    df.to_json(full_path, orient='records')
 
-print(f"✅ Export complete! Your file '{file_path}' has been saved in the current directory.")
+print(f"✅ Export complete! Your file '{full_path}' has been saved.")
