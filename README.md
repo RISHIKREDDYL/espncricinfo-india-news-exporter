@@ -14,8 +14,7 @@ An autonomous, Dockerized news scraper that fetches the latest cricket news from
 
 ### 1. Prerequisites
 Ensure you have the following installed on your system:
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Docker](https://docs.docker.com/get-docker/) (v2.0+ recommended)
 
 ### 2. Clone the Repository
 ```bash
@@ -26,13 +25,13 @@ cd espncricinfo-india-news-exporter
 ### 3. Build the Image
 Build the Docker container to install the environment and Chromium driver:
 ```bash
-docker-compose build
+docker compose build
 ```
 
 ### 4. Run the Scraper
 Start the container. It will automatically initialize the browser, scrape the news, and save the CSV:
 ```bash
-docker-compose up
+docker compose up
 ```
 
 ### 5. View Your Data
