@@ -17,6 +17,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the script
 COPY scraper.py .
 
+# Ensure output directory exists
+RUN mkdir -p output
+
 # Create a volume for output files
 VOLUME ["/app/output"]
 
